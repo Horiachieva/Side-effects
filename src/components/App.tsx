@@ -124,24 +124,25 @@
 
 // Модалне вікно
 // src/components/App.tsx
-import { useState } from 'react';
-import Modal from './Modal';
+// import { useState } from 'react';
+// import Modal from './Modal';
 
-export default function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+// export default function App() {
+//   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => setIsModalOpen(true);
+//   const openModal = () => setIsModalOpen(true);
 
-  const closeModal = () => setIsModalOpen(false);
+//   const closeModal = () => setIsModalOpen(false);
 
-  return (
-    <div>
-      <h1>Main content of the page</h1>
-      <button onClick={openModal}>Open modal</button>
-      {isModalOpen && <Modal onClose={closeModal} />}
-    </div>
-  );
-}
+//   return (
+//     <div>
+//       <h1>Main content of the page</h1>
+//       <button onClick={openModal}>Open modal</button>
+//       {isModalOpen && <Modal onClose={closeModal} />}
+//     </div>
+//   );
+// }
+
 // Повторне використання
 // import { useState } from 'react';
 // import Modal from './Modal';
@@ -167,3 +168,35 @@ export default function App() {
 //     </div>
 //   );
 // }
+
+import { useState, useEffect } from 'react';
+
+export default function App() {
+  const [clicks, setClicks] = useState(() => {
+    // Зчитуємо значення за ключем
+    const savedClicks = window.localStorage.getItem('saved-clicks');
+
+    // Якщо там щось є, повертаємо це
+    // значення як початкове значення стану
+    if (savedClicks !== null) {
+      return JSON.parse(savedClicks);
+    }
+
+    // У протилежному випадку повертаємо
+    // яке-небудь значення за замовчуванням
+    return 0;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('saved-clicks', JSON.stringify(clicks));
+  }, [clicks]);
+
+  return (
+    <div>
+      <button onClick={() => setClicks(clicks + 1)}>
+        You clicked {clicks} times
+      </button>
+      <button onClick={() => setClicks(0)}>Reset</button>
+    </div>
+  );
+}
